@@ -144,5 +144,12 @@ dmypy.json
 *.tar
 *.tar.gz
 
+# Lightning-Hydra-Template
+configs/local/default.yaml
+/data/
+/logs/
+.env
+
 # pytorch lightning
 lightning_logs
+data/*
