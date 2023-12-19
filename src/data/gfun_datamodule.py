@@ -1,4 +1,4 @@
-from typing import Any, Optional, List, Dict, Union, Set
+from typing import Optional, List
 from lightning.pytorch.utilities.types import EVAL_DATALOADERS, TRAIN_DATALOADERS
 from transformers import PreTrainedTokenizerBase
 
@@ -7,10 +7,9 @@ import lightning as L
 import numpy as np
 
 from dataclasses import dataclass
-from torch.utils.data import random_split, DataLoader, Dataset
+from torch.utils.data import DataLoader, Dataset
 from transformers import AutoTokenizer, AutoProcessor
 from datasets import load_from_disk, Image
-from torchvision.transforms import transforms, InterpolationMode
 
 from pathlib import Path
 from tqdm import tqdm
@@ -196,7 +195,7 @@ class MMgFunDataModule(L.LightningDataModule):
         return len(self.test_dataset)
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(" f"{self.dataset=}, " f"{self.num_workers=}, " f"{self.batch_size=}, " f"{self.num_training_samples()=})"
+        return f"{self.__class__.__name__}({self.dataset=}, {self.num_workers=}, {self.pin_memory=}, {self.batch_size=}, {self.num_training_samples()=})"
 
 
 def main():

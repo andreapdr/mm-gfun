@@ -1,0 +1,4 @@
+defaults:
+  - early_stopping
+  - model_summary
+  - lr_monitor
