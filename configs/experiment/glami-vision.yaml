@@ -5,6 +5,7 @@ defaults:
   - override /logger: multilogger
   - override /callbacks: default
   - override /scheduler: cosine_scheduler
+  - override /optimizer: adamw_optimizer
 
 trainer:
   enable_checkpointing: true
@@ -13,8 +14,8 @@ trainer:
   limit_val_batches: 1000
   val_check_interval: 0.5
   log_every_n_steps: 100
-  accumulate_grad_batches: 1
-  gradient_clip_value: 1.0
+  accumulate_grad_batches: 8
+  gradient_clip_val: 1.0
   gradient_clip_algorithm: norm
 
 
@@ -23,7 +24,7 @@ data:
   num_workers: 6
 
 models:
-  lr: 5e-5
+  lr: 3e-3
 
 vision_model:
   base_model: google/vit-base-patch16-224
@@ -31,5 +32,5 @@ vision_model:
 text_model:
   base_model: xlm-roberta-base
 
-tags: ["glami", "vision"]
+tags: ["glami", "vision", "adamw", "cosine-scheduler"]
 task_name: "train-vision"
