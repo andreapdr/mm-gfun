@@ -26,7 +26,6 @@ def main(cfg: DictConfig):
 
     log.info(f"Instantiating model <{cfg.models._target_}>")
     model = hydra.utils.instantiate(cfg.models)
-    model.configure_optimizers()
 
     log.info(f"Instantiating callbacks...")
     callbacks = init_callbacks(cfg.get("callbacks"))
