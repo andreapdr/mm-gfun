@@ -6,6 +6,7 @@ import torch
 import lightning as L
 import numpy as np
 
+from pathlib import Path
 from dataclasses import dataclass
 from torch.utils.data import DataLoader, Dataset
 from transformers import AutoTokenizer, AutoProcessor
@@ -27,7 +28,6 @@ class MultiModalProcessor:
             padding: str = "longest",
             truncation: str = "longest_first",
             return_tensors: str = "pt",
-            device: str = "cpu",
             ):
         assert padding in ["longest", "max_length", "do_not_pad"]
         assert truncation in ["longest_first", "do_not_truncate"]
@@ -43,7 +43,6 @@ class MultiModalProcessor:
         self.truncation = truncation
         self.pad_to_multiple_of = pad_to_multiple_of
         self.return_tensors = return_tensors
-        self.device = device
 
     def __call__(self, features):
         features.update(
@@ -54,17 +53,16 @@ class MultiModalProcessor:
                 max_length=self.max_length,
                 pad_to_multiple_of=self.pad_to_multiple_of,
                 return_tensors=self.return_tensors
-            ).to(self.device)
+            )
         )
         if not self.skip_image:
             features["pixel_values"] = torch.tensor(
                 np.array(
                     [self.image_processor(img.convert("RGB"))["pixel_values"][0] for img in features["image"]]
                     ),
-                    device=self.device
                 )
 
-        features["labels"] = torch.tensor(features["labels"], device=self.device)
+        features["labels"] = torch.tensor(features["labels"])
         return features
 
 
@@ -82,7 +80,6 @@ class MultiModalCollator:
 
 class MMgFunDataModule(L.LightningDataModule):
 
-    DATASET_DIRS = {"glami": Path("/media/datasets/hf_datasets/GLAMI-1M-dataset")}
     RETURN_COLUMNS_MAPPER = {"glami": ["input_ids", "attention_mask", "pixel_values", "labels"],}
     METADATA_COLUMNS = {"glami": ["geo", "item_id", "image_id", "category_name", "label_source", "name", "description"],}
     N_LABELS = {"glami": 191,}
@@ -90,6 +87,7 @@ class MMgFunDataModule(L.LightningDataModule):
     def __init__(
             self,
             dataset: str,
+            dataset_dir: str,
             num_workers: int,
             batch_size: int,
             text_model_name: str,
@@ -102,6 +100,7 @@ class MMgFunDataModule(L.LightningDataModule):
             ):
         super().__init__()
         self.dataset = dataset
+        self.dataset_dir = Path(dataset_dir)
         self.num_workers = num_workers
         self.batch_size = batch_size
         self.pin_memory: bool = accelerator is not None and str(accelerator) == "gpu"
@@ -118,8 +117,6 @@ class MMgFunDataModule(L.LightningDataModule):
             image_processor=AutoProcessor.from_pretrained(vision_model_name),
             skip_image=self.skip_images,
             max_length=self.max_length,
-            device="cuda" if self.pin_memory else "cpu"
-            # device=self.device
         )
         
         return_columns = self.RETURN_COLUMNS_MAPPER[self.dataset]
@@ -136,8 +133,7 @@ class MMgFunDataModule(L.LightningDataModule):
     
     def setup(self, stage: Optional[str] = None) -> None:
         if (stage is None or stage == "fit") and (self.train_dataset is None and self.val_dataset is None):
-            datadir = self.DATASET_DIRS.get(self.dataset, None)
-            assert datadir is not None, f"dataset must be in {list(self.DATASET_DIRS.keys())}, received: {self.dataset=}"
+            datadir = str(self.dataset_dir.expanduser())
 
             dataset = load_from_disk(datadir)
             dataset.pop("test")
