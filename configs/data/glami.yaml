@@ -1,5 +1,6 @@
 _target_: src.data.gfun_datamodule.MMgFunDataModule
 dataset: glami
+dataset_dir: data/GLAMI-1M-dataset
 num_workers: 4
 batch_size: 32
 text_model_name: "${text_model.base_model}"

@@ -13,6 +13,10 @@ trainer:
   limit_val_batches: 1000
   val_check_interval: 0.5
   log_every_n_steps: 100
+  accumulate_grad_batches: 1
+  gradient_clip_value: 1.0
+  gradient_clip_algorithm: norm
+
 
 data:
   batch_size: 64
