@@ -27,6 +27,7 @@ class MultiModalProcessor:
             padding: str = "longest",
             truncation: str = "longest_first",
             return_tensors: str = "pt",
+            device: str = "cpu",
             ):
         assert padding in ["longest", "max_length", "do_not_pad"]
         assert truncation in ["longest_first", "do_not_truncate"]
@@ -42,6 +43,7 @@ class MultiModalProcessor:
         self.truncation = truncation
         self.pad_to_multiple_of = pad_to_multiple_of
         self.return_tensors = return_tensors
+        self.device = device
 
     def __call__(self, features):
         features.update(
@@ -52,16 +54,17 @@ class MultiModalProcessor:
                 max_length=self.max_length,
                 pad_to_multiple_of=self.pad_to_multiple_of,
                 return_tensors=self.return_tensors
-            )
+            ).to(self.device)
         )
         if not self.skip_image:
             features["pixel_values"] = torch.tensor(
                 np.array(
                     [self.image_processor(img.convert("RGB"))["pixel_values"][0] for img in features["image"]]
-                    )
+                    ),
+                    device=self.device
                 )
 
-        features["labels"] = torch.tensor(features["labels"])
+        features["labels"] = torch.tensor(features["labels"], device=self.device)
         return features
 
 
@@ -115,6 +118,8 @@ class MMgFunDataModule(L.LightningDataModule):
             image_processor=AutoProcessor.from_pretrained(vision_model_name),
             skip_image=self.skip_images,
             max_length=self.max_length,
+            device="cuda" if self.pin_memory else "cpu"
+            # device=self.device
         )
         
         return_columns = self.RETURN_COLUMNS_MAPPER[self.dataset]
