@@ -10,6 +10,7 @@ defaults:
   - paths: glami
   - hydra: default
   - experiment: null
+  - debug: null
 
 num_labels: 191
 

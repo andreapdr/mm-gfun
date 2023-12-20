@@ -18,11 +18,14 @@ data:
   batch_size: 64
   num_workers: 6
 
-tags: ["glami", "vision"]
-task_name: "train-vision"
+models:
+  lr: 5e-5
 
 vision_model:
   base_model: google/vit-base-patch16-224
 
 text_model:
   base_model: xlm-roberta-base
+
+tags: ["glami", "vision"]
+task_name: "train-vision"
