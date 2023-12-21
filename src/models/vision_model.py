@@ -2,7 +2,6 @@ import torch
 import lightning as L
 
 from transformers import AutoModelForImageClassification
-from torch.optim import AdamW
 
 
 class AutoImageClassificationLightningModule(L.LightningModule):
@@ -12,7 +11,7 @@ class AutoImageClassificationLightningModule(L.LightningModule):
             num_labels: int,
             optimizer: torch.optim.Optimizer,
             scheduler: torch.optim.lr_scheduler = None,
-            lr:float =5e-5,
+            lr: float = 5e-5,
         ):
         super().__init__()
         self.base_model = AutoModelForImageClassification.from_pretrained(
@@ -74,12 +73,14 @@ class AutoImageClassificationLightningModule(L.LightningModule):
 
 
 if __name__ == "__main__":
+    from functools import partial
+
     print("Debugging vision_model...")
     model = AutoImageClassificationLightningModule(
         base_model_name="google/vit-base-patch16-224",
-        num_labels=10,
+        num_labels=3,
         optimizer=torch.optim.SGD,
         # scheduler=torch.optim.lr_scheduler.ConstantLR
-        scheduler=torch.optim.lr_scheduler.CosineAnnealingLR
+        scheduler=partial(torch.optim.lr_scheduler.CosineAnnealingLR, T_max=10)
     )
     model.configure_optimizers()
