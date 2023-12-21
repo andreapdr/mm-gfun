@@ -7,6 +7,9 @@ defaults:
   - override /scheduler: cosine_scheduler
   - override /optimizer: adamw_optimizer
 
+tags: ["glami", "vision", "adamw", "cosine-scheduler"]
+task_name: "train-vision"
+
 trainer:
   enable_checkpointing: true
   max_epochs: 10
@@ -17,7 +20,6 @@ trainer:
   accumulate_grad_batches: 8
   gradient_clip_val: 1.0
   gradient_clip_algorithm: norm
-
 
 data:
   batch_size: 64
@@ -31,6 +33,3 @@ vision_model:
 
 text_model:
   base_model: xlm-roberta-base
-
-tags: ["glami", "vision", "adamw", "cosine-scheduler"]
-task_name: "train-vision"
