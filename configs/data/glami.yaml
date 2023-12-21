@@ -10,3 +10,4 @@ max_rows: -1
 max_length: 32
 skip_images: False
 load_from_cache: True
+num_labels: 191

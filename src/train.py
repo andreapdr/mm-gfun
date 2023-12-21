@@ -25,14 +25,14 @@ def main(cfg: DictConfig):
     val_dataloader = datamodule.val_dataloader()
 
     log.info(f"Instantiating model <{cfg.models._target_}>")
-    model = hydra.utils.instantiate(cfg.models)
+    model = hydra.utils.instantiate(cfg.models, num_labels=datamodule.num_labels)
 
     log.info(f"Instantiating callbacks...")
     callbacks = init_callbacks(cfg.get("callbacks"))
     log.info(f"Instantiating loggers...")
     loggers = init_loggers(cfg.get("logger"))
 
-    log.info(f"Instantiating trainer...")
+    log.info(f"Instantiating trainer <{cfg.trainer}>")
     trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=loggers)
 
     log.info(f"Starting training...")
@@ -41,6 +41,8 @@ def main(cfg: DictConfig):
         train_dataloaders=train_dataloader,
         val_dataloaders=val_dataloader,
     )
+
+    # TODO test phase
 
 if __name__ == "__main__":
     main()

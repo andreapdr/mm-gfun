@@ -82,7 +82,6 @@ class MMgFunDataModule(L.LightningDataModule):
 
     RETURN_COLUMNS_MAPPER = {"glami": ["input_ids", "attention_mask", "pixel_values", "labels"],}
     METADATA_COLUMNS = {"glami": ["geo", "item_id", "image_id", "category_name", "label_source", "name", "description"],}
-    N_LABELS = {"glami": 191,}
 
     def __init__(
             self,
@@ -97,6 +96,7 @@ class MMgFunDataModule(L.LightningDataModule):
             max_length: Optional[int] = None,
             skip_images: bool = False,
             load_from_cache: bool = True,
+            num_labels: Optional[int] = None,
             ):
         super().__init__()
         self.dataset = dataset
@@ -107,6 +107,7 @@ class MMgFunDataModule(L.LightningDataModule):
 
         self.skip_images = skip_images
         self.max_length = max_length
+        self.num_labels = num_labels
 
         self.train_dataset: Optional[Dataset] = None
         self.val_dataset: Optional[Dataset] = None
@@ -182,9 +183,6 @@ class MMgFunDataModule(L.LightningDataModule):
             collate_fn=self.collator,
             drop_last=True
         )
-
-    def num_labels(self) -> int:
-        return self.N_LABELS[self.dataset]
 
     def num_training_samples(self) -> int:
         return len(self.train_dataset)

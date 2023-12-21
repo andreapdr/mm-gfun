@@ -26,7 +26,6 @@ trainer:
   detect_anomaly: True 
   fast_dev_run: True
   batch_size: 1
-  
 
 data:
   num_workers: 0

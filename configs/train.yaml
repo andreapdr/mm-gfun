@@ -12,8 +12,6 @@ defaults:
   - experiment: null
   - debug: null
 
-num_labels: 191
-
 project: "mm-gfun"
 task_name: train
 
