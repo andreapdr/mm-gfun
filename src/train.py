@@ -12,7 +12,6 @@ from utils.instantiators import init_callbacks, init_loggers
 
 log = logging.getLogger(name=__name__)
 
-
 @hydra.main(version_base="1.3", config_path="../configs/", config_name="train.yaml")
 def main(cfg: DictConfig):
 
