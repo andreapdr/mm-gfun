@@ -6,6 +6,7 @@ defaults:
   - override /callbacks: default
   - override /scheduler: cosine_scheduler
   - override /optimizer: adamw_optimizer
+  - override /models: vision_model
 
 tags: ["glami", "vision", "adamw", "cosine-scheduler"]
 task_name: "train-vision"
