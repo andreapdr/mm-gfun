@@ -181,7 +181,6 @@ class MMgFunDataModule(L.LightningDataModule):
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
             collate_fn=self.collator,
-            drop_last=True
         )
 
     def num_training_samples(self) -> int:
@@ -204,11 +203,12 @@ def main():
 
     dataset = MMgFunDataModule(
         dataset="glami",
-        num_workers=1,
-        batch_size=2,
-        accelerator=None,
-        max_rows=1000,
-        skip_images=False,
+        dataset_dir="data/GLAMI-1M-dataset",
+        accelerator="gpu",
+        num_workers=2,
+        batch_size=64,
+        max_rows=-1,
+        skip_images=True,
         max_length=32,
         text_model_name=TEXT_MODEL_NAME,
         vision_model_name=VISION_MODEL_NAME,
