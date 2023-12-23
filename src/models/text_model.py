@@ -21,6 +21,8 @@ class AutoTextClassificationLightningModule(L.LightningModule):
         )
 
         self.lr = lr
+
+        # Setting logger=True causes deadlock error if num_workers > 1!
         self.save_hyperparameters(logger=False)
     
     def forward(self, input_ids, attention_mask):
@@ -28,7 +30,7 @@ class AutoTextClassificationLightningModule(L.LightningModule):
             input_ids=input_ids,
             attention_mask=attention_mask,
             )
-        return outputs
+        return outputs.logits
     
     def encode(self, batch, batch_idx):
         batch, metadata = batch
@@ -85,3 +87,8 @@ if __name__ == "__main__":
     )
     model.configure_optimizers()
     print(model)
+    
+    dummy_inputs = model.base_model.dummy_inputs
+    dummy_inputs["attention_mask"] = torch.ones_like(dummy_inputs["input_ids"])
+    outputs = model(**dummy_inputs)
+    print(f"{outputs=}")
