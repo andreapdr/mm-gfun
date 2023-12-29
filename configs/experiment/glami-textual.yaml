@@ -16,9 +16,9 @@ trainer:
   max_epochs: 10
   limit_train_batches: null
   limit_val_batches: 1000
-  val_check_interval: 0.5
+  val_check_interval: 1.0
   log_every_n_steps: 100
-  accumulate_grad_batches: 8
+  accumulate_grad_batches: 4
   gradient_clip_val: 1.0
   gradient_clip_algorithm: norm
 
@@ -28,7 +28,7 @@ data:
   skip_images: True
 
 models:
-  lr: 3e-3
+  lr: 3e-5
 
 vision_model:
   base_model: google/vit-base-patch16-224
