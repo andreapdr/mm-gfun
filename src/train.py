@@ -31,7 +31,7 @@ def main(cfg: DictConfig):
     log.info(f"Instantiating loggers...")
     loggers = init_loggers(cfg.get("logger"))
 
-    log.info(f"Instantiating trainer <{cfg.trainer}>")
+    log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=loggers)
 
     log.info(f"Starting training...")
