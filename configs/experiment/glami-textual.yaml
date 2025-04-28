@@ -1,0 +1,37 @@
+# @package _global_ 
+# https://github.com/facebookresearch/hydra/discussions/2410
+
+defaults:
+  - override /logger: multilogger
+  - override /callbacks: default
+  - override /scheduler: cosine_scheduler
+  - override /optimizer: adamw_optimizer
+  - override /models: text_model
+
+tags: ["glami", "textual", "adamw", "cosine-scheduler"]
+task_name: "train-textual"
+
+trainer:
+  enable_checkpointing: true
+  max_epochs: 10
+  limit_train_batches: null
+  limit_val_batches: 1000
+  val_check_interval: 1.0
+  log_every_n_steps: 100
+  accumulate_grad_batches: 4
+  gradient_clip_val: 1.0
+  gradient_clip_algorithm: norm
+
+data:
+  batch_size: 64
+  num_workers: 6
+  skip_images: True
+
+models:
+  lr: 3e-5
+
+vision_model:
+  base_model: google/vit-base-patch16-224
+
+text_model:
+  base_model: xlm-roberta-base

@@ -1,0 +1,6 @@
+_target_: src.models.vision_model.AutoImageClassificationLightningModule
+base_model_name: "${vision_model.base_model}"
+num_labels: "${num_labels}"
+optimizer: "${optimizer}"
+scheduler: "${scheduler}" 
+lr: 5e-4

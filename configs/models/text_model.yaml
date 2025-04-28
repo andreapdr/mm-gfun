@@ -1,0 +1,6 @@
+_target_: src.models.text_model.AutoTextClassificationLightningModule
+base_model_name: "${text_model.base_model}"
+num_labels: "${num_labels}"
+optimizer: "${optimizer}"
+scheduler: "${scheduler}" 
+lr: 5e-4

@@ -1,0 +1,13 @@
+_target_: src.data.gfun_datamodule.MMgFunDataModule
+dataset: glami
+dataset_dir: data/GLAMI-1M-dataset
+num_workers: 4
+batch_size: 32
+text_model_name: "${text_model.base_model}"
+vision_model_name: "${vision_model.base_model}"
+accelerator: "${trainer.accelerator}"
+max_rows: -1 
+max_length: 32
+skip_images: False
+load_from_cache: True
+num_labels: 191
